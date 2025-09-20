@@ -1,55 +1,129 @@
-import { useState } from 'react';
-import api from '../../servieces/api';
-import { useNavigate } from 'react-router-dom';
-
-import toast from 'react-hot-toast';
+import { useState } from "react";
+import api from "../../servieces/api";
+import { useNavigate } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function Register() {
-  const [form, setForm] = useState({ name: '', email: '', password: '' });
+  const [form, setForm] = useState({ name: "", email: "", password: "", confirmPassword: "" });
+  const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    let newErrors = {};
+    if (!form.name) newErrors.name = "Name is required";
+    if (!form.email) newErrors.email = "Email is required";
+    if (!form.password) newErrors.password = "Password is required";
+    if (!form.confirmPassword) newErrors.confirmPassword = "Confirm password is required";
+    if (form.password && form.confirmPassword && form.password !== form.confirmPassword) {
+      newErrors.confirmPassword = "Passwords do not match";
+    }
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length > 0) return;
+
     try {
-      await api.post('/auth/register', form);
-      toast.success('Registered successfully');
-      navigate('/login'); // go to login after successful registration
+      await api.post("/auth/register", form);
+      toast.success("Registered successfully", {
+        style: {
+          background: "rgba(255, 255, 255, 0.9)",
+          color: "#16a34a",
+          fontWeight: "600",
+          borderRadius: "12px",
+          padding: "12px 16px",
+          boxShadow: "0 4px 15px rgba(0,0,0,0.15)",
+        },
+        iconTheme: {
+          primary: "#16a34a",
+          secondary: "#fff",
+        },
+      });
+      navigate("/login");
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Error');
+      setErrors({ general: err.response?.data?.message || "Registration failed" });
     }
   };
 
   return (
-    <div className="max-w-sm mx-auto mt-10 space-y-6">
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input
-          className="border p-2 w-full"
-          placeholder="Name"
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
-        />
-        <input
-          className="border p-2 w-full"
-          placeholder="Email"
-          onChange={(e) => setForm({ ...form, email: e.target.value })}
-        />
-        <input
-          className="border p-2 w-full"
-          placeholder="Password"
-          type="password"
-          onChange={(e) => setForm({ ...form, password: e.target.value })}
-        />
-        <button className="bg-blue-500 text-white p-2 w-full">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-400 to-purple-600 p-4">
+      <Toaster position="top-right" />
+      <div className="w-full max-w-sm bg-white/30 backdrop-blur-md rounded-2xl shadow-lg p-6">
+        <h2 className="text-2xl font-bold text-center bg-gradient-to-r from-green-500 to-purple-600 bg-clip-text text-transparent">
           Register
-        </button>
-      </form>
+        </h2>
+        <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+          <div>
+            <input
+              className={`border p-2 w-full rounded-xl bg-white/60 focus:ring-2 focus:ring-purple-500 ${
+                errors.name ? "border-red-500" : ""
+              }`}
+              placeholder="Name"
+              value={form.name}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
+            />
+            {errors.name && <p className="text-red-600 text-sm mt-1">{errors.name}</p>}
+          </div>
 
-      <div className="text-center text-sm text-blue-600">
-        <button
-          onClick={() => navigate('/login')}
-          className="hover:underline"
-        >
-          Already have an account? Login
-        </button>
+          <div>
+            <input
+              className={`border p-2 w-full rounded-xl bg-white/60 focus:ring-2 focus:ring-purple-500 ${
+                errors.email ? "border-red-500" : ""
+              }`}
+              placeholder="Email"
+              type="email"
+              value={form.email}
+              onChange={(e) => setForm({ ...form, email: e.target.value })}
+            />
+            {errors.email && <p className="text-red-600 text-sm mt-1">{errors.email}</p>}
+          </div>
+
+          <div>
+            <input
+              className={`border p-2 w-full rounded-xl bg-white/60 focus:ring-2 focus:ring-purple-500 ${
+                errors.password ? "border-red-500" : ""
+              }`}
+              placeholder="Password"
+              type="password"
+              value={form.password}
+              onChange={(e) => setForm({ ...form, password: e.target.value })}
+            />
+            {errors.password && <p className="text-red-600 text-sm mt-1">{errors.password}</p>}
+          </div>
+
+          <div>
+            <input
+              className={`border p-2 w-full rounded-xl bg-white/60 focus:ring-2 focus:ring-purple-500 ${
+                errors.confirmPassword ? "border-red-500" : ""
+              }`}
+              placeholder="Confirm Password"
+              type="password"
+              value={form.confirmPassword}
+              onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })}
+            />
+            {errors.confirmPassword && <p className="text-red-600 text-sm mt-1">{errors.confirmPassword}</p>}
+          </div>
+
+          {errors.general && (
+            <p className="text-red-600 text-sm text-center">{errors.general}</p>
+          )}
+
+          <button
+            className="w-full py-3 bg-gradient-to-r from-blue-500 to-blue-700 text-white font-semibold rounded-xl shadow-md hover:scale-105 transform transition-all duration-300"
+            type="submit"
+          >
+            Register
+          </button>
+        </form>
+
+        <div className="text-center text-sm text-purple-700 mt-4">
+          <button
+            onClick={() => navigate("/login")}
+            className="hover:underline"
+          >
+            Already have an account? Login
+          </button>
+        </div>
       </div>
     </div>
   );
