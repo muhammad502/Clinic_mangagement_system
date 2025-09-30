@@ -42,68 +42,79 @@ import RBilling from "../pages/receptionist/Billing";
 const AppRoutes = () => {
   return (
     <Routes>
-      <Route path="/register" element={<Register />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/forgetPassword" element={<ForgotPassword />} />
-      <Route path="/resetPassword" element={<ResetPassword />} />
-      <Route path="*" element={<NotFound />} />
+  {/* Root path = Login */}
+  <Route path="/" element={<Login />} />
 
-      <Route
-        path="/patient"
-        element={
-          <ProtectedRoute allowedRoles={["patient"]}>
-            <PatientLayout />
-          </ProtectedRoute>
-        }
-      >
-        <Route index element={<PatientHome />} />
-        <Route path="appointments" element={<MyAppointments />} />
-        <Route path="profile" element={<Profile />} />
-        <Route path="billing" element={<Billing />} />
-      </Route>
+  {/* Auth routes */}
+  <Route path="/register" element={<Register />} />
+  <Route path="/login" element={<Login />} />
+  <Route path="/forgetPassword" element={<ForgotPassword />} />
+  <Route path="/resetPassword" element={<ResetPassword />} />
 
-      <Route
-        path="/super-admin"
-        element={
-          <ProtectedRoute allowedRoles={["super-admin"]}>
-            <SuperAdminLayout />
-          </ProtectedRoute>
-        }
-      >
-        <Route index element={<SuperAdminHome />} />
-        <Route path="users" element={<ManageUsers />} />
-        <Route path="reports" element={<Reports />} />
-        <Route path="settings" element={<Settings />} />
-      </Route>
+  {/* Patient routes */}
+  <Route
+    path="/patient"
+    element={
+      <ProtectedRoute allowedRoles={["patient"]}>
+        <PatientLayout />
+      </ProtectedRoute>
+    }
+  >
+    <Route index element={<PatientHome />} />
+    <Route path="appointments" element={<MyAppointments />} />
+    <Route path="profile" element={<Profile />} />
+    <Route path="billing" element={<Billing />} />
+  </Route>
 
-      <Route
-        path="/doctor"
-        element={
-          <ProtectedRoute allowedRoles={["doctor"]}>
-            <DoctorLayout />
-          </ProtectedRoute>
-        }
-      >
-        <Route index element={<DoctorHome />} />
-        <Route path="appointments" element={<DAppointments />} />
-        <Route path="patients" element={<MyPatients />} />
-        <Route path="profile" element={<DProfile />} />
-      </Route>
+  {/* Super Admin routes */}
+  <Route
+    path="/super-admin"
+    element={
+      <ProtectedRoute allowedRoles={["super-admin"]}>
+        <SuperAdminLayout />
+      </ProtectedRoute>
+    }
+  >
+    <Route index element={<SuperAdminHome />} />
+    <Route path="users" element={<ManageUsers />} />
+    <Route path="reports" element={<Reports />} />
+    <Route path="settings" element={<Settings />} />
+  </Route>
 
-      <Route
-        path="/receptionist"
-        element={
-          <ProtectedRoute allowedRoles={["receptionist"]}>
-            <ReceptionistLayout />
-          </ProtectedRoute>
-        }
-      >
-        <Route index element={<ReceptionistHome />} />
-        <Route path="appointments" element={<RAppointments />} />
-        <Route path="patients" element={<RPatients />} />
-        <Route path="billing" element={<RBilling />} />
-      </Route>
-    </Routes>
+  {/* Doctor routes */}
+  <Route
+    path="/doctor"
+    element={
+      <ProtectedRoute allowedRoles={["doctor"]}>
+        <DoctorLayout />
+      </ProtectedRoute>
+    }
+  >
+    <Route index element={<DoctorHome />} />
+    <Route path="appointments" element={<DAppointments />} />
+    <Route path="patients" element={<MyPatients />} />
+    <Route path="profile" element={<DProfile />} />
+  </Route>
+
+  {/* Receptionist routes */}
+  <Route
+    path="/receptionist"
+    element={
+      <ProtectedRoute allowedRoles={["receptionist"]}>
+        <ReceptionistLayout />
+      </ProtectedRoute>
+    }
+  >
+    <Route index element={<ReceptionistHome />} />
+    <Route path="appointments" element={<RAppointments />} />
+    <Route path="patients" element={<RPatients />} />
+    <Route path="billing" element={<RBilling />} />
+  </Route>
+
+  {/* 404 - catch all */}
+  <Route path="*" element={<NotFound />} />
+</Routes>
+
   );
 };
 
